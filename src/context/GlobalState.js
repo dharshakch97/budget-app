@@ -1,15 +1,19 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useEffect } from 'react';
 import AppReducer from './AppReducer';
 
 const initialState = {
-    incomeTransactions: [],
-    expenseTransactions: []
+    incomeTransactions: JSON.parse(localStorage.getItem('incomeTransactions')) || [],
+    expenseTransactions: JSON.parse(localStorage.getItem('expenseTransactions')) || [],
 };
 
 export const GlobalContext = createContext(initialState);
 
 export const GlobalContextProvider = ({children}) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
+    useEffect(() => {
+        localStorage.setItem("incomeTransactions", JSON.stringify(state.incomeTransactions));
+        localStorage.setItem("expenseTransactions", JSON.stringify(state.expenseTransactions));
+    })
     const addIncome = (incomeTransaction) => {
         dispatch({
             type: "ADD_INCOME",
